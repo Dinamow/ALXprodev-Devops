@@ -12,4 +12,4 @@ weight=$( echo $response | jq '.weight')
 weight=$( echo $weight | awk '{print $1/10}' )
 height=$( echo $response | jq '.height')
 height=$( echo $height | awk '{print $1/10}' )
-echo "${name} is of type ${type}, weighs ${weight}kg, and is ${height}m tall."
+echo "$name is of type $type, weighs ${weight}kg, and is ${height}m tall."
