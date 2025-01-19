@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 
 url=$( jq -r '.url' data.json )
+name=$( jq -r '.name' data.json )
+name=$(echo $name | sed 's/./\U&/')
 response=$( curl -s $url )
 type=$( echo $response | jq '.types[].type.name')
 type=$( echo $type | tr -d '"')
 # capitlize the first letter
 type=$( echo $type | sed 's/./\U&/' )
 weight=$( echo $response | jq '.weight')
+weight=$( echo $weight | awk '{print $1/10}' )
 height=$( echo $response | jq '.height')
-echo "Pikachu is of type ${type}, weighs ${weight}, and is 0.${height}m tall."
+height=$( echo $height | awk '{print $1/10}' )
+echo "${name} is of type ${type}, weighs ${weight}kg, and is ${height}m tall."
