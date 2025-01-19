@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+URL="https://pokeapi.co/api/v2/pokemon/?limit=1302"
+JFile="data.json"
+EFile="errors.txt"
+
+response=$(curl -s "$URL" 2> "$EFile")
+
+for i in $(echo "$response" | jq -r '.results[] | @base64'); do
+  _jq() {
+    echo ${i} | base64 --decode | jq -r ${1}
+  }
+  name=$(_jq '.name')
+  if [[ $name == "pikachu" ]]; then
+    echo "Found: $name"
+    _jq '.' > "$JFile"
+    exit 0
+  fi
+  # i want to say if the file is emp add to the error file error
+  if [[ -s "$EFile" ]]; then
+    echo "Error: NotFount" > $EFile
+  fi
+done
+
