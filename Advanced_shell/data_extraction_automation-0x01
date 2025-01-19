@@ -1,15 +1,21 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-url=$( jq -r '.url' data.json )
-name=$( jq -r '.name' data.json )
-name=$(echo $name | sed 's/./\U&/')
-response=$( curl -s $url )
-type=$( echo $response | jq '.types[].type.name')
-type=$( echo $type | tr -d '"')
-# capitlize the first letter
-type=$( echo $type | sed 's/./\U&/' )
-weight=$( echo $response | jq '.weight')
-weight=$( echo $weight | awk '{print $1/10}' )
-height=$( echo $response | jq '.height')
-height=$( echo $height | awk '{print $1/10}' )
-echo "\"$name is of type $type, weighs ${weight}kg, and is ${height}m tall.\""
+# Define the Pokémon name
+POKEMON_NAME="pikachu"
+
+# Define output files
+INPUT_FILE="data.json"
+
+name=$(jq -r '.name' "$INPUT_FILE")
+height=$(jq '.height' "$INPUT_FILE")
+weight=$(jq '.weight' "$INPUT_FILE")
+type=$(jq -r '.types[0].type.name' "$INPUT_FILE")
+
+
+formatted_weight=$(awk "BEGIN {print $height * 0.1}")
+formatted_height=$(awk "BEGIN {print $weight * 0.1}")
+
+
+output="$name is of type $type, weighs ${formatted_weight}kg, and is ${formatted_height}m tall."
+formatted_output=$(echo "$output" | sed 's/\b\(.\)/\u\1/g')
+echo "$formatted_output"
